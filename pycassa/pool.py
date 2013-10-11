@@ -474,6 +474,8 @@ class ConnectionPool(object):
     def put(self, conn):
         """ Returns a connection to the pool. """
         if not conn.transport.isOpen():
+            with self._pool_lock:
+                self._current_conns -= 1
             return
 
         if self._pool_threadlocal:
